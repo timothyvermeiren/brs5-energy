@@ -1,0 +1,37 @@
+{
+    "1.8.1": {
+        "label": "Actieve energie afname dagtarief",
+        "description": "Totale afname van energie in kWh dagtarief"
+    },
+    "1.8.2": {
+        "label": "Actieve energie afname nachttarief",
+        "description": "Totale afname van energie in kWh nachttarief"
+    },
+    "1.8.0": {
+        "label": "Totale actieve energie afname",
+        "description": "Totale afname van energie in kWh"
+    },
+
+    "2.8.1": {
+        "label": "Actieve energie injectie dagtarief",
+        "description": "Totale injectie van energie in kWh dagtarief"
+    },
+    "2.8.2": {
+        "label": "Actieve energie injectie nachttarief",
+        "description": "Totale injectie van energie in kWh nachttarief"
+    },
+    "2.8.0": {
+        "label": "Totale actieve energie injectie",
+        "description": "Totale injectie van energie in kWh"
+    },
+    
+    "1.7.0": {
+        "label": "Afgenomen ogenblikkelijk vermogen",
+        "description": "Afgenomen ogenblikkelijk vermogen in kW"
+    },
+    
+    "2.7.0": {
+        "label": "Geïnjecteerd ogenblikkelijk vermogen",
+        "description": "Geïnjecteerd ogenblikkelijk vermogen in kW"
+    }
+}
