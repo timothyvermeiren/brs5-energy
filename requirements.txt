@@ -12,6 +12,7 @@ onnxruntime==1.16.1
 opencv-python==4.8.1.78
 packaging==23.2
 protobuf==4.24.4
+psycopg2-binary==2.9.9
 pymodbus==2.5.3
 pyModbusTCP==0.2.0
 pyreadline3==3.4.1
