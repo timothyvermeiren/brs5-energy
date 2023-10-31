@@ -1,0 +1,11 @@
+# Example for brs5_energy_dsmr.service
+[Unit]
+Description=BRS 5 Energy - DSMR
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/opt/brs5-energy
+ExecStart=/opt/brs5-energy/.venv/bin/python /opt/brs5-energy/dsmr.py
+[Install]
+WantedBy=multi-user.target
