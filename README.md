@@ -28,4 +28,30 @@ Processing & aggregations:
 
 ### Displaying Data
 
-This will be a simple Django or Flask application fetching the latest records of raw data to show live usage, in combination with aggregated data to provide context.
+This will be a simple Django application fetching the latest records of raw data to show live usage, in combination with aggregated data to provide context.
+
+#### Running the Django application with Apache
+
+And example of the virtual host to use is shown in `resources/apache/brs5-energy.duckdns.org.conf`. Note that we need to install `mod_wsgi` _for the correct Python environment_, as [shown here](https://stackoverflow.com/questions/69302698/django-mod-wsgi-apache-server-modulenotfounderror-no-module-named-django).
+
+* `cd ~/downloads`
+* `curl -O https://codeload.github.com/GrahamDumpleton/mod_wsgi/tar.gz/4.9.4`
+* `tar -xf 4.9.4`
+* `cd mod_wsgi-4.9.4/`
+* Make sure we have apxs2 for the next step: `sudo apt-get install apache2-dev`
+* Then this is key: `./configure --with-python=/opt/brs5-energy/.venv/bin/python3.10`
+* `make`
+* `sudo make install`
+
+Then, configure Apache with the virtual host and restart:
+
+* `sudo a2ensite brs5-energy.duckdns.org`
+* `sudo systemctl restart apache2`
+
+To make changes, we do need to reload apache before they appear. That's fine.
+
+To configure TLS encryption with certbot, we do need to do something slightly different regarding the fact that we're using WSGI here. Relevant [answer on SO](https://stackoverflow.com/questions/51322329/apache-with-ssl-configuration-not-working-with-wsgi-configuration-for-django-app).
+
+* Comment out the `WSGIDaemonProcess` line first (in the non-HTTPS conf).
+* Run `sudo certbot --apache -d brs5-energy.duckdns.org`.
+* Un-comment the line from before.

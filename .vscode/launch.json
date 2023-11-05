@@ -11,6 +11,19 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/brs5_energy_monitor/manage.py",
+            "cwd": "${workspaceFolder}/brs5_energy_monitor",
+            "args": [
+                "runserver",
+                "8080"
+            ],
+            "django": true,
+            "justMyCode": true
         }
     ]
 }
