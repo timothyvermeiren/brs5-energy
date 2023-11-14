@@ -19,6 +19,11 @@ async function initializeMonitor() {
     const injectieLabel = $("#injectieLabel");
     const verbruikLabel = $("#verbruikLabel");
 
+    const productiePercentProgress = $("#productiePercentProgress");
+    
+    const productieTimestamp = $("#productieTimestamp");
+    const verbruikTimestamp = $("#verbruikTimestamp");
+
     const resultaatLabelValue = $("#resultaatLabelValue");
     const resultaatLabelUnit = $("#resultaatLabelUnit");
     const resultaatLabelLabel = $("#resultaatLabelLabel");
@@ -61,7 +66,18 @@ async function initializeMonitor() {
             afnameLabel.text(`${response.afname_current.value} ${response.afname_current.unit}`);
             injectieLabel.text(`${response.injectie_current.value} ${response.injectie_current.unit}`);
             verbruikLabel.text(`${response.verbruik_current.value} ${response.verbruik_current.unit}`);
+
+            // Update timestamps
+            let productieTimestampValue = new Date(Date.parse(response.productie_current.record_timestamp)).toLocaleTimeString("nl-BE")
+            productieTimestamp.text(`${productieTimestampValue}`);
+            let verbruikTimestampValue = new Date(Date.parse(response.verbruik_current.record_timestamp)).toLocaleTimeString("nl-BE")
+            verbruikTimestamp.text(`${verbruikTimestampValue}`);
             
+            // Update "progress"
+            productiePercentProgress.attr("value", response.productie_pct_capacity);
+            productiePercentProgress.text(`${Math.round(response.productie_pct_capacity * 100)}%`)
+            
+            // Result
             resultaatLabelValue.text(response.resultaat_current.value);
             resultaatLabelUnit.text(response.resultaat_current.unit);
             resultaatLabelLabel.text(response.resultaat_current.label);
@@ -129,7 +145,8 @@ async function initializeHistoryChart() {
             y: {
               beginAtZero: true
             }
-          }
+          },
+          maintainAspectRatio: false
         }
       }
     );

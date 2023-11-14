@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 
@@ -19,6 +20,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
         productie_current["value"] = productie_current["value"] / 1000
         productie_current["unit"] = "kW"
         # TBD whether this has any impact on performance; we're manipulating the ORM representation of the data after all, perhaps we need a copy
+    # For productie, we also include solar capacity to determine how much we're producing as a % of the total capacity.
+    solar_capacity_total = settings.SOLAR_STRING_CAPACITY_KW
     afname_current_o = EnergyRaw.objects.filter(metric="Afgenomen ogenblikkelijk vermogen").latest("record_timestamp")
     afname_current = model_to_dict(afname_current_o)
     injectie_current_o = EnergyRaw.objects.filter(metric="Geïnjecteerd ogenblikkelijk vermogen").latest("record_timestamp")
@@ -92,6 +95,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
     
     return {
         "productie_current": productie_current,
+        "solar_capacity_total": solar_capacity_total,
+        "productie_pct_capacity": round(float(productie_current["value"]) / float(solar_capacity_total)) + 0.2,
         "afname_current": afname_current,
         "injectie_current": injectie_current,
         "verbruik_current": verbruik_current,

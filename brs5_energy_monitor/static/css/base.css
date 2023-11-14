@@ -15,10 +15,17 @@ body {
 	font-size: 28pt;
 }
 
+.productieTimestamp {
+	font-size: 12pt;
+}
+
 .verbruik {
 	font-size: 28pt;
 }
 
+.verbruikTimestamp {
+	font-size: 12pt;
+}
 .resultaat {
 	font-size: 48pt;
 	border: 5px solid #ddd;
@@ -49,6 +56,7 @@ body {
 	border-left: 5px solid #ddd;
 	border-right: 5px solid #ddd;
 	border-bottom: 5px solid #ddd;
+	height: 350px;
 }
 
 /* Messages */
@@ -89,3 +97,12 @@ body {
 .message.info {
 	background: #85c9e8;
 }
+
+#productiePercentProgress {
+	height: 20px;
+}
+
+/* Multiple browsers :rolling-eyes: */
+progress::-moz-progress-bar { background: #f4f731; }
+progress::-webkit-progress-value { background: #f4f731; }
+progress { background: #f4f731; }

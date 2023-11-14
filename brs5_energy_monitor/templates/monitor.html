@@ -44,12 +44,22 @@
             <div class="col-4 prover">
 
                 <div id="productie" class="row p-3 align-items-center text-center">
-                    <div class="col-3">
-                        <i class="fa-solid fa-sun"></i>
-                    </div>
-                    <div class="col-9 text-center">
-                        <div class="row">Productie</div>
-                        <div class="row productieLabel" id="productieLabel">{{ productie_current.value }} {{ productie_current.unit }}</div>
+                    <div class="col">
+                        <div class="row">       
+                            <div class="col-3">
+                                <i class="fa-solid fa-sun"></i>
+                            </div>
+                            <div class="col-9 text-center">
+                                <div class="row">Productie</div>
+                                <div class="row productieLabel" id="productieLabel">{{ productie_current.value }} {{ productie_current.unit }}</div>
+                                <div class="row productieTimestamp" id="productieTimestamp">{{ productie_current.record_timestamp|time:"H:i:s" }}</div>
+                            </div>
+                        </div>
+                        <div class="row productiePercentDiv m-0 w-100" id="productiePercentDiv">
+                            <div class="col w-100 m-0">
+                                <progress id="productiePercentProgress" class="w-100 m-0" max="1" value="{{ productie_pct_capacity }}">{{ productie_pct_capacity }}%</progress>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -60,6 +70,7 @@
                     <div class="col-9 text-center">
                         <div class="row">Verbruik</div>
                         <div class="row verbruikLabel" id="verbruikLabel">{{ verbruik_current.value }} {{ verbruik_current.unit }}</div>
+                        <div class="row verbruikTimestamp" id="verbruikTimestamp">{{ verbruik_current.record_timestamp|time:"H:i:s" }}</div>
                     </div>
                 </div>
 
@@ -87,7 +98,7 @@
         <div class="row">
 
             <!-- Top left: Productie & Verbruik -->
-            <div class="col-12 history">
+            <div id="historyChartContainer" class="col-12 history">
                 <canvas id="historyChart"></canvas>
             </div>
 
