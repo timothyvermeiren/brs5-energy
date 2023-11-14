@@ -96,7 +96,7 @@ def get_monitor_values(include_history:bool=False) -> dict:
     return {
         "productie_current": productie_current,
         "solar_capacity_total": solar_capacity_total,
-        "productie_pct_capacity": round(float(productie_current["value"]) / float(solar_capacity_total)) + 0.2,
+        "productie_pct_capacity": round(float(productie_current["value"]) / float(solar_capacity_total)),
         "afname_current": afname_current,
         "injectie_current": injectie_current,
         "verbruik_current": verbruik_current,
