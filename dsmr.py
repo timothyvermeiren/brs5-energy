@@ -49,7 +49,7 @@ while True:
                 try:
                     
                     # Read
-                    recorded_data = next((data_point for data_point in data_parsed if data_point.find(code) > 0), None)
+                    recorded_data = next((data_point for data_point in data_parsed if data_point.find(f":{code}") > 0), None)
                     if recorded_data is not None:
                         data_point_value = float(re.findall(r"\(([\d\.]+)\*", recorded_data)[0])
                         data_point_unit = re.findall(r"\*(\w+)\)$", recorded_data)[0]
