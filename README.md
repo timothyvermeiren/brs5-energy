@@ -21,6 +21,8 @@ The modules above write "live" information into a raw data table, which is furth
 
 Processing & aggregations:
 
+**To be reviewed!** There is probably a more efficient way as we might be better off simply using the same principle as energy providers and keeping 15-minute min/max/avg/sum. Or even better, read that from the meter if we can, because it might not be possible for us to accurately calculate this.
+
 * Every **hour**: aggregates the `avg` and `sum` of the last 60 minutes or 3600 seconds of raw data. Does not delete data.
 * Every **day**: aggregates the `avg` and `sum` of the last 86400 seconds of data. **Clears the raw data** from [antepenultimate](https://en.wiktionary.org/wiki/antepenultimate) day (not today, not the day before today... but the day before _that_).
 * Every **week**: aggregates the `avg` and `sum` of the already-aggregated daily data of the last 7 days.
