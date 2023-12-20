@@ -29,7 +29,7 @@ except Exception as e:
     sys.exit()         
 
 # Let's not always log everything... It's nice to keep the mapping as it is, but we can filter which codes we effectively want to log to the database here, to keep it a bit lighter.
-active_codes = ["1.7.0", "2.7.0"]
+active_codes = ["1.7.0", "2.7.0", "24.2.3"]
 
 dsmr_codes_for_logging = [code for code in dsmr_code_mapping if code in active_codes]
 

@@ -33,5 +33,11 @@
     "2.7.0": {
         "label": "Geïnjecteerd ogenblikkelijk vermogen",
         "description": "Geïnjecteerd ogenblikkelijk vermogen in kW"
+    },
+
+    "24.2.3": {
+        "label": "Last value of not temperature corrected gas volume in m³",
+        "description": "Gas volume in m³"
     }
+
 }
