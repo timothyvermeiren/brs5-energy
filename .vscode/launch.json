@@ -24,6 +24,15 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Jobs",
+            "type": "python",
+            "request": "launch",
+            "program": "jobs.py",
+            "args": ["--mode", "postgres_cleanup"],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
