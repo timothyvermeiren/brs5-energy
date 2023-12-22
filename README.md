@@ -19,6 +19,12 @@ Postgres database, with DDL in `resources/postgres_setup.sql`. Relies on a few s
 
 The modules above write "live" information into a raw data table, which is further manipulated by the "processing & aggregations" items below.
 
+Note that **the postgres instance's max open file ulimit has been modified**. There are lots of long-lasting connections (from the "agents") that caused postgres to eventually stop accepting new connections after a day or two. This was due to the fact that that limit for max number of open files was reached. The following changes were applied:
+
+* Edit the service's unit file to increase the limit. The service (in this case) is called `postgresql@12-main.service`.
+* The service uses a generated unit file, so we can "access" it with: `systemctl edit --full postgresql@12-main.service`
+* We set `LimitNOFILE` under `[Service]` to `4096``.
+
 Processing & aggregations:
 
 **To be reviewed!** There is probably a more efficient way as we might be better off simply using the same principle as energy providers and keeping 15-minute min/max/avg/sum. Or even better, read that from the meter if we can, because it might not be possible for us to accurately calculate this.
