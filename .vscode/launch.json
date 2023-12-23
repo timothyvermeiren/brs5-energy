@@ -30,7 +30,7 @@
             "type": "python",
             "request": "launch",
             "program": "jobs.py",
-            "args": ["--mode", "postgres_cleanup"],
+            "args": ["--mode", "solar_estimate_refresh"],
             "console": "integratedTerminal",
             "justMyCode": true
         }

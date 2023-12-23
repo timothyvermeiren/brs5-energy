@@ -12,6 +12,7 @@ The project consists of a few components hosted in different places, for the pur
 * `dsmr.py`: collects **live information from the BE Fluvius meter**, through a USB adapter for the serial port.  
   In our case, this relies on a Pi Zero connected to said USB adapter running [smartmeterBridge](https://github.com/legolasbo/smartmeterBridge), exposing it as a TCP/IP service. In turn, this module connects to _that_ TCP/IP service with `socket`.
 * `fusion_solar.py`: not currently used; but could be used to get solar panel information from the **Huawei Fusion Solar API**.
+* Data for solar production forecast is collected from https://forecast.solar/. As we're not doing this live but at a daily rate, this is implemented in `jobs.py` and called through `cron` instead of a separate module running as a service.
 
 ### Storing and Processing Data
 
@@ -28,6 +29,8 @@ Note that **the postgres instance's max open file ulimit has been modified**. Th
 Processing & aggregations:
 
 **To be reviewed!** There is probably a more efficient way as we might be better off simply using the same principle as energy providers and keeping 15-minute min/max/avg/sum. Or even better, read that from the meter if we can, because it might not be possible for us to accurately calculate this.
+
+Original suggestion:
 
 * Every **hour**: aggregates the `avg` and `sum` of the last 60 minutes or 3600 seconds of raw data. Does not delete data.
 * Every **day**: aggregates the `avg` and `sum` of the last 86400 seconds of data. **Clears the raw data** from [antepenultimate](https://en.wiktionary.org/wiki/antepenultimate) day (not today, not the day before today... but the day before _that_).

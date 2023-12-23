@@ -7,3 +7,12 @@ CREATE TABLE energy_raw (
     value NUMERIC,
     unit VARCHAR(255)
 );
+
+-- Solar forecast is stored in the same format for convenience (it could be unioned if desired). It comes in this format from the source anyway.
+CREATE TABLE solar_forecast (
+    record_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    source VARCHAR(255) NOT NULL, -- 'forecast.solar'
+    metric VARCHAR(255),
+    value NUMERIC,
+    unit VARCHAR(255)
+);

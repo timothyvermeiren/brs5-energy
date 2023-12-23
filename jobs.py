@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, requests, time, datetime
 import psycopg2
 from dotenv import load_dotenv
 import argparse
@@ -29,10 +29,61 @@ if mode == "postgres_cleanup":
     pg_cursor.execute(pg_delete_query)
     print(f"{ pg_cursor.rowcount } rows deleted.")
     pg_connection.commit()
-    pg_connection.close()
 
 # Mode "solar_estimate_refresh": updates solar energy production estimates from (source TBD)
 if mode == "solar_estimate_refresh":
-    print("Not implemented yet.")
+    print("Refreshing solar production estimates from solar.io.")
+    # https://api.forecast.solar/:apikey/estimate/:lat/:lon/:dec/:az/:kwp
+    fc_solar_url = f"https://api.forecast.solar/estimate/{os.environ['fc_solar_lat']}/{os.environ['fc_solar_lon']}/{os.environ['fc_solar_dec']}/{os.environ['fc_solar_az']}/{os.environ['fc_solar_kwp']}"
+    fc_solar_response = requests.get(url=fc_solar_url, headers={ "Accept": "application/json" })
+    if not fc_solar_response.ok:
+        print(f"Something went wrong getting the solar production estimate data from forecast.solar:\n\t{ fc_solar_response.text }")
+    else:
+
+        # Mapping of what we get
+        fc_solar_data_mapping = {
+            "watts": {
+                "metric_label": "Watts (power) average for the period",
+                "unit": "W"
+            },
+            "watt_hours_period": {
+                "metric_label": "Watt hours (energy) for the period",
+                "unit": "W h"
+            },
+            "watt_hours": {
+                "metric_label": "Cumulative Watt hours (energy) throuhgout the day, per hour",
+                "unit": "W h"
+            },
+            "watt_hours_day": {
+                "metric_label": "Total Watt hours (energy) for the day",
+                "unit": "W h"
+            }
+        }
+
+        print("Response received from forecast.solar; storing in Postgres after clearing the table.")
+        pg_delete_query = f"DELETE FROM { os.environ['pg_forecast_table'] }"
+        pg_cursor.execute(pg_delete_query)
+        print(f"{ pg_cursor.rowcount } rows deleted.")
+        pg_connection.commit()
+
+        solar_forecast_data = fc_solar_response.json()
+        solar_forecast_request_timestamp = solar_forecast_data.get("message", {}).get("info", {}).get("time_utc", "")
+        
+        for metric in solar_forecast_data.get("result", {}).keys():
+            print(f"Processing metric: { metric }")
+            rows_for_insertion = [] # We're going to put these in the right order for our table, then execute_many
+            for datapoint_key, datapoint_value in solar_forecast_data.get("result", {}).get(metric, []).items():
+                rows_for_insertion.append([
+                    datapoint_key, # "record_timestamp"
+                    "forescast.solar", # "source"
+                    fc_solar_data_mapping[metric].get("metric_label", metric), # "metric"
+                    datapoint_value, # "value"
+                    fc_solar_data_mapping[metric].get("unit", "W") # "unit"
+                ])
+            pg_cursor.executemany(f"INSERT INTO { os.environ['pg_forecast_table'] } VALUES(%s, %s, %s, %s, %s)", rows_for_insertion)
+            pg_connection.commit()
+            print(f"\t{ pg_cursor.rowcount } rows inserted into { os.environ['pg_forecast_table'] }.")
+
+pg_connection.close()
 
 print("We're done!")
