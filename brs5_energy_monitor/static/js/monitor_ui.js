@@ -5,6 +5,10 @@ let historyChartCtx = $("#historyChart");
 let historyChart;
 const resultaatPositiveColor = "#54babb";
 const resultaatNegativeColor = "#e60050";
+let forecastChartCtx = $("#forecastChart");
+let forecastChart;
+let historyGasChartCtx = $("#historyGasChart");
+let historyGasChart;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -18,11 +22,13 @@ async function initializeMonitor() {
     const afnameLabel = $("#afnameLabel");
     const injectieLabel = $("#injectieLabel");
     const verbruikLabel = $("#verbruikLabel");
+    const verbruikGasLabel = $("#verbruikGasLabel");
 
     const productiePercentProgress = $("#productiePercentProgress");
     
     const productieTimestamp = $("#productieTimestamp");
     const verbruikTimestamp = $("#verbruikTimestamp");
+    const verbruikGasTimestamp = $("#verbruikGasTimestamp");
 
     const resultaatLabelValue = $("#resultaatLabelValue");
     const resultaatLabelUnit = $("#resultaatLabelUnit");
@@ -66,12 +72,18 @@ async function initializeMonitor() {
             afnameLabel.text(`${response.afname_current.value} ${response.afname_current.unit}`);
             injectieLabel.text(`${response.injectie_current.value} ${response.injectie_current.unit}`);
             verbruikLabel.text(`${response.verbruik_current.value} ${response.verbruik_current.unit}`);
+            verbruikGasLabel.text(`${response.gas_consumption_current.consumption_m3_per_h.toFixed(3)} m3/h`);
 
             // Update timestamps
             let productieTimestampValue = new Date(Date.parse(response.productie_current.record_timestamp)).toLocaleTimeString("nl-BE")
             productieTimestamp.text(`${productieTimestampValue}`);
             let verbruikTimestampValue = new Date(Date.parse(response.verbruik_current.record_timestamp)).toLocaleTimeString("nl-BE")
             verbruikTimestamp.text(`${verbruikTimestampValue}`);
+            let verbruikGasTimestampValue = new Date(Date.parse(response.gas_consumption_current.record_timestamp)).toLocaleTimeString("nl-BE")
+            // verbruikGasDuration comes in a format such as 'P0DT00H04M06.021071S'
+            let regexExtractDuration = /\d{2}H\d{2}M\d{2}/g;
+            let verbruikGasDurationValue = regexExtractDuration.exec(response.gas_consumption_current.time_interval)[0].replace("H", ":").replace("M", ":");
+            verbruikGasTimestamp.text(`${verbruikGasTimestampValue} (gemeten over ${verbruikGasDurationValue})`);
             
             // Update "progress"
             productiePercentProgress.attr("value", response.productie_pct_capacity);
@@ -94,7 +106,7 @@ async function initializeMonitor() {
                 resultaatIndicatorPositive.addClass("d-none");
             }
 
-            // Update Chart
+            // Update Chart: electricity result
             recordTimestampDate = new Date(Date.parse(response.resultaat_current.record_timestamp)).toLocaleTimeString("nl-BE");
             historyChart.data.labels.push(recordTimestampDate);
             historyChart.data.datasets[0].data.push(response.resultaat_current.value);
@@ -116,7 +128,7 @@ async function initializeMonitor() {
 
 async function initializeHistoryChart() {
 
-    console.log("Initializing History Chart");
+    console.log("Initializing Electricity History Chart");
     // We will have dumped the data through a technique like this: https://stackoverflow.com/questions/44824358/pass-json-to-js-using-django-render
     // In resultaat_history (etc)
 
@@ -153,5 +165,88 @@ async function initializeHistoryChart() {
 
 }
 
+async function initializeForecastChart() {
+
+  console.log("Initializing Solar Production Forecast Chart");
+  // We will have dumped the data through a technique like this: https://stackoverflow.com/questions/44824358/pass-json-to-js-using-django-render
+
+  Chart.defaults.backgroundColor = "#666666";
+  Chart.defaults.color = "#dddddd";
+  Chart.defaults.plugins.legend.display = false;
+  
+  forecastData = JSON.parse(solar_forecast_data);
+
+  forecastChart = new Chart(
+    forecastChartCtx,
+    {
+      type: "line",
+      data: {
+        labels: forecastData.map(row => new Date(Date.parse(row.record_timestamp)).toLocaleTimeString("nl-BE")),
+        datasets: [
+          {
+            label: "Forecast",
+            data: forecastData.map(row => row.value),
+            backgroundColor: "#f4f731",
+            borderColor: "#f4f731"
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        maintainAspectRatio: false
+      }
+    }
+  );
+
+}
+
+async function initializeHistoryGasChart() {
+
+  console.log("Initializing History Gas Chart");
+  // We will have dumped the data through a technique like this: https://stackoverflow.com/questions/44824358/pass-json-to-js-using-django-render
+
+  Chart.defaults.backgroundColor = "#666666";
+  Chart.defaults.color = "#dddddd";
+  Chart.defaults.plugins.legend.display = false;
+  
+  historyGasData = JSON.parse(gas_consumption_history_data);
+
+  historyGas = new Chart(
+    historyGasChartCtx,
+    {
+      type: "line",
+      data: {
+        labels: historyGasData.map(row => new Date(Date.parse(row.record_timestamp)).toLocaleTimeString("nl-BE")),
+        datasets: [
+          {
+            label: "Forecast",
+            data: historyGasData.map(row => row.consumption_m3_per_h),
+            backgroundColor: "#dddddd",
+            borderColor: "#dddddd"
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          },
+          x: {
+            type: "timeseries"
+          }
+        },
+        maintainAspectRatio: false
+      }
+    }
+  );
+
+}
+
 document.addEventListener("DOMContentLoaded", initializeMonitor);
 document.addEventListener("DOMContentLoaded", initializeHistoryChart);
+document.addEventListener("DOMContentLoaded", initializeForecastChart);
+document.addEventListener("DOMContentLoaded", initializeHistoryGasChart);
