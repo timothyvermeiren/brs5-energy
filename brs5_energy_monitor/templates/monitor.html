@@ -37,71 +37,141 @@
 
     <div class="container-fluid">
 
-        <!-- Top row: BANs -->
+        <!-- Single-row as container -->
         <div class="row">
 
-            <!-- Top left: Productie & Verbruik -->
-            <div class="col-4 prover">
+            <!-- Left column: BANs & Forecast -->
+            <div class="col-4">
 
-                <div id="productie" class="row p-3 align-items-center text-center">
+                <!-- Top-left: BANs -->
+                <div class="row bg-dark-brs row-ban">
+
+                    <!-- Single col for all BANs -->
                     <div class="col">
-                        <div class="row">       
-                            <div class="col-3">
-                                <i class="fa-solid fa-sun"></i>
+
+                        <!-- BAN row 1: productie, verbruik -->
+                        <div class="row tile row-ban-pv">
+
+                            <!-- BAN row 1 col 1: productie -->
+                            <div id="productie" class="col-6 p-3 align-items-center">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <i class="fa-solid fa-sun"></i>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="row">Productie</div>
+                                        <div class="row productieLabel" id="productieLabel">{{ productie_current.value }} {{ productie_current.unit }}</div>
+                                        <div class="row timestamp" id="productieTimestamp">{{ productie_current.record_timestamp|time:"H:i:s" }}</div>
+                                    </div>
+                                </div>
+                                <div class="row productiePercentDiv m-0 w-100" id="productiePercentDiv">
+                                    <div class="col w-100 m-0">
+                                        <progress id="productiePercentProgress" class="w-100 m-0" max="1" value="{{ productie_pct_capacity }}">{{ productie_pct_capacity }}%</progress>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-9 text-center">
-                                <div class="row">Productie</div>
-                                <div class="row productieLabel" id="productieLabel">{{ productie_current.value }} {{ productie_current.unit }}</div>
-                                <div class="row productieTimestamp" id="productieTimestamp">{{ productie_current.record_timestamp|time:"H:i:s" }}</div>
+
+                            <!-- BAN row 1 col 1: verbruik -->
+                            <div id="verbruik" class="col-6 p-3 align-items-center">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <i class="fa-solid fa-plug"></i>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="row">Verbruik</div>
+                                        <div class="row verbruikLabel" id="verbruikLabel">{{ verbruik_current.value }} {{ verbruik_current.unit }}</div>
+                                        <div class="row timestamp" id="verbruikTimestamp">{{ verbruik_current.record_timestamp|time:"H:i:s" }}</div>
+                                    </div>
+                                </div>
                             </div>
+
+                        <!-- / BAN row 1 -->
                         </div>
-                        <div class="row productiePercentDiv m-0 w-100" id="productiePercentDiv">
-                            <div class="col w-100 m-0">
-                                <progress id="productiePercentProgress" class="w-100 m-0" max="1" value="{{ productie_pct_capacity }}">{{ productie_pct_capacity }}%</progress>
+
+                        <!-- BAN row 2: voiture, gas -->
+                        <div class="row tile row-ban-gc">
+                            <div id="verbruikGas" class="col-6 p-3 align-items-center">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <i class="fa-solid fa-fire"></i>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="row verbruikGasLabelLabel">Gas</div>
+                                        <div class="row verbruikGasLabel" id="verbruikGasLabel">{{ gas_consumption_current.consumption_m3_per_h|floatformat:3 }} m3/h</div>
+                                        <div class="row timestamp" id="verbruikGasTimestamp">{{ gas_consumption_current.record_timestamp|time:"H:i:s" }} (gemeten over {{ gas_consumption_current.time_interval }})</div>
+                                    </div>
+                                </div>
                             </div>
+                            <div id="voiture" class="col-6 p-3 align-items-center">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <i class="fa-solid fa-car"></i>
+                                    </div>
+                                    <div class="col-9">
+                                        Hier de voiture.
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- / BAN row 2 -->
                         </div>
+
+                        <!-- BAN row 3: result -->
+                        <div class="row tile row-ban-result">
+                            <div id="resultaat" class="col-12 p-3 resultaat">
+                                <div class="row align-items-center h-100">
+                                    <div class="col-3 text-center">
+                                        <div id="resultaatIndicatorPositive" class="fa-solid fa-arrow-up d-none"></div>
+                                        <div id="resultaatIndicatorNegative" class="fa-solid fa-arrow-down d-none"></div>
+                                    </div>
+                                    <div class="col-9">
+                                        <!-- <div class="d-block">Resultaat</div> -->
+                                        <div class="d-inline resultaatLabel" id="resultaatLabelValue">{{ resultaat_current.value }}</div>
+                                        <div class="d-inline resultaatLabel" id="resultaatLabelUnit">{{ resultaat_current.unit }}</div>
+                                        <div class="d-block resultaatLabel" id="resultaatLabelLabel">{{ resultaat_current.label }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- / BAN row 3 -->
+                        </div>
+
+                    <!-- / BAN single col -->
                     </div>
+
+                <!-- / BAN row & Tile -->
                 </div>
-                
-                <div id="verbruik" class="row p-3 align-items-center text-center">
-                    <div class="col-3">
-                        <i class="fa-solid fa-plug"></i>
-                    </div>
-                    <div class="col-9 text-center">
-                        <div class="row">Verbruik</div>
-                        <div class="row verbruikLabel" id="verbruikLabel">{{ verbruik_current.value }} {{ verbruik_current.unit }}</div>
-                        <div class="row verbruikTimestamp" id="verbruikTimestamp">{{ verbruik_current.record_timestamp|time:"H:i:s" }}</div>
+
+                <!-- Bottom-left: Forecast -->
+                <div class="row bg-dark-brs row-forecast">
+                    <!-- Single col -->
+                    <div id="forecastContainer" class="col-12 forecast">
+                        <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
 
+            <!-- / Left column -->
             </div>
 
-            <!-- Top right: Resultaat -->
-            <div id="resultaat" class="col-8 p-3 resultaat">
-                <div class="row align-items-center h-100">
-                    <div class="col-3 text-center">
-                        <div id="resultaatIndicatorPositive" class="fa-solid fa-arrow-up d-none"></div>
-                        <div id="resultaatIndicatorNegative" class="fa-solid fa-arrow-down d-none"></div>
-                    </div>
-                    <div class="col-9">
-                        <!-- <div class="d-block">Resultaat</div> -->
-                        <div class="d-inline resultaatLabel" id="resultaatLabelValue">{{ resultaat_current.value }}</div>
-                        <div class="d-inline resultaatLabel" id="resultaatLabelUnit">{{ resultaat_current.unit }}</div>
-                        <div class="d-block resultaatLabel" id="resultaatLabelLabel">{{ resultaat_current.label }}</div>
+            <!-- Right column: ogenblikkelijk chart + gas chart -->
+            <div class="col-8">
+
+                <!-- Row 1: result -->
+                <div class="row row-history">
+                    <div id="historyChartContainer" class="col-12 history">
+                        <canvas id="historyChart"></canvas>
                     </div>
                 </div>
-            </div>    
 
-        </div>
+                <!-- Row 2: gas -->
+                <div class="row row-gas">
+                    <div id="historyGasChartContainer" class="col-12 history-gas">
+                        <canvas id="historyGasChart"></canvas>
+                    </div>
+                </div>
 
-        <!-- Middle row: History -->
-        <div class="row">
-
-            <!-- Top left: Productie & Verbruik -->
-            <div id="historyChartContainer" class="col-12 history">
-                <canvas id="historyChart"></canvas>
+            <!-- / Right column -->
             </div>
 
+        <!-- / Row as "container" -->
         </div>
 
     </div>
@@ -123,8 +193,10 @@
     {% endblock content %}
     
     {% block javascripts %}
+        <!-- jQuery and Bootstrap -->
         <script src="{% static '/plugins/jquery/js/jquery.min.js' %}"></script>
         <script src="{% static '/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+        <!-- ChartJS -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="{% static '/js/monitor_ui.js' %}"></script>
     {% endblock javascripts %}
@@ -136,6 +208,12 @@
             {% endif %}
             {% if verbruik_history %}
                 const verbruik_history_data = '{{ verbruik_history|safe }}';
+            {% endif %}
+            {% if gas_consumption_history %}
+                const gas_consumption_history_data = '{{ gas_consumption_history|safe }}';
+            {% endif %}
+            {% if solar_forecast %}
+                const solar_forecast_data = '{{ solar_forecast|safe }}';
             {% endif %}
         </script>
 

@@ -1,4 +1,11 @@
--- Run as the newly created user from database_setup.sql
+-- As postgres on any database
+CREATE DATABASE brs5_energy;
+CREATE USER brs5_energy WITH ENCRYPTED PASSWORD 'hunter2';
+GRANT ALL PRIVILEGES ON DATABASE brs5_energy TO brs5_energy;
+-- Reconnect to brs5_energy as postgres
+GRANT ALL PRIVILEGES ON SCHEMA public TO brs5_energy;
+
+-- Then, run as brs5_energy
 
 CREATE TABLE energy_raw (
     record_timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
