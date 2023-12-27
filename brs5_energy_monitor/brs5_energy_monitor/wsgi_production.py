@@ -11,20 +11,20 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 
 import os
 
-os.environ["DJANGO_ALLOWED_HOSTS"] = "127.0.0.1,localhost,192.168.68.67,brs5-energy.duckdns.org"
+os.environ["DJANGO_ALLOWED_HOSTS"] = "127.0.0.1,localhost,192.168.68.67,brs5-energy.duckdns.org,brs5-energy.08082020.be"
 os.environ["DJANGO_SETTINGS_MODULE"] = "brs5_energy_monitor.settings"
 
 # Database
-# To connect to Postgres when using WSL, where postgres is on the Windows host but we're running Django in WSL, find the IP address with this (run in WSL):
-# ipconfig.exe | grep 'vEthernet (WSL)' -A4 | cut -d":" -f 2 | tail -n1 | sed -e 's/\s*//g'
-# Use localhost when... local.
-os.environ["BRS5_ENERGY_POSTGRES_DB_SERVER"] = "localhost"
+os.environ["BRS5_ENERGY_POSTGRES_DB_SERVER"] = "192.168.68.85"
 os.environ["BRS5_ENERGY_POSTGRES_DB_PORT"] = "5432"
 os.environ["BRS5_ENERGY_POSTGRES_DB_USER"] = "brs5_energy"
 os.environ["BRS5_ENERGY_POSTGRES_DB_PASSWORD"] = "FiZk_ihcy7UzuyU-g*KbGcCNZ4Qz"
 os.environ["BRS5_ENERGY_POSTGRES_DB_NAME"] = "brs5_energy"
 
 from django.core.wsgi import get_wsgi_application
-
+from django.core.management import call_command
 
 application = get_wsgi_application()
+# Our database isn't local, so we "need to migrate each time"
+# See: https://stackoverflow.com/questions/58168161/django-applying-database-migration-on-server-start-with-wsgi
+call_command("migrate")

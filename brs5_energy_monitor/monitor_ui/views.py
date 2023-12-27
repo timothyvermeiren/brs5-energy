@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from copy import deepcopy
 import json
 
-from .models import EnergyRaw
+from .models import EnergyRaw, GasConsumption, SolarForecast
 
 # Helper function to get values which we might as well just leave here. Returns a dict that we can use as the context
 
@@ -26,6 +26,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
     afname_current = model_to_dict(afname_current_o)
     injectie_current_o = EnergyRaw.objects.filter(metric="Geïnjecteerd ogenblikkelijk vermogen").latest("record_timestamp")
     injectie_current = model_to_dict(injectie_current_o)
+    gas_consumption_current_o = GasConsumption.objects.latest("record_timestamp")
+    gas_consumption_current = model_to_dict(gas_consumption_current_o)
 
     # Now, determine our effective "performance", verbruik and resultaat.
     verbruik_current = {
@@ -57,10 +59,13 @@ def get_monitor_values(include_history:bool=False) -> dict:
     # If we include history: same steps as above, more or less, but... with more data.
     verbruik_history = []
     resultaat_history = []
+    gas_consumption_history = []
+    solar_forecast = []
 
     if include_history:
 
-        history_length = 50
+        # For electricity, because we have frequent measurements, we'll start with just a few
+        history_length = 200
 
         productie_history_o = EnergyRaw.objects.filter(metric="Input Power").order_by("-record_timestamp")[:history_length:-1]
         productie_history = list(map(model_to_dict, productie_history_o))
@@ -92,7 +97,20 @@ def get_monitor_values(include_history:bool=False) -> dict:
                 resultaat_history[i]["record_timestamp"] = afname_history[i]["record_timestamp"] # It doesn't _really_ matter which time stamp we pick?
                 verbruik_history[i]["record_timestamp"] = afname_history[i]["record_timestamp"]
 
+        # For gas, there is no need for history_length (there are fewer measurements), but because it comes from a different pre-processed view we need to also rearrange and prepare.
+        gas_consumption_o = GasConsumption.objects.order_by("record_timestamp")
+        gas_consumption_history = list(map(model_to_dict, gas_consumption_o))
+        # for i in range(len(gas_consumption)):
+        #     # Current values as a template
+        #     gas_consumption_history.append(gas_consumption_current)
+        #     gas_consumption_history[i]["record_timestamp"] = gas_consumption[i]["record_timestamp"]
+
+
+        # We will consider the forecast as part of "history" as well; mainly because this is just used to determine which data to get with the initial load, as opposed to subsequent async calls that just have updated data.
+        solar_forecast_o = SolarForecast.objects.filter(metric="Watt hours (energy) for the period").order_by("record_timestamp")
+        solar_forecast = list(map(model_to_dict, solar_forecast_o))
     
+
     return {
         "productie_current": productie_current,
         "solar_capacity_total": solar_capacity_total,
@@ -101,8 +119,11 @@ def get_monitor_values(include_history:bool=False) -> dict:
         "injectie_current": injectie_current,
         "verbruik_current": verbruik_current,
         "resultaat_current": resultaat_current,
+        "gas_consumption_current": gas_consumption_current,
         "verbruik_history": json.dumps(verbruik_history, default=str),
         "resultaat_history": json.dumps(resultaat_history, default=str),
+        "gas_consumption_history": json.dumps(gas_consumption_history, default=str),
+        "solar_forecast": json.dumps(solar_forecast, default=str),
     }
 
 # Create your views here.

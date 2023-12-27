@@ -13,3 +13,31 @@ class EnergyRaw(models.Model):
     class Meta:
         managed = False
         db_table = 'energy_raw'
+
+class SolarForecast(models.Model):
+    record_timestamp = models.DateTimeField(primary_key=True)
+    source = models.CharField(max_length=255)
+    metric = models.CharField(max_length=255, blank=True, null=True)
+    value = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    unit = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'solar_forecast'
+
+class GasConsumption(models.Model):
+    record_timestamp = models.DateTimeField(primary_key=True)
+    previous_timestamp = models.DateTimeField()
+    time_interval = models.CharField(max_length=255)
+    time_seconds = models.IntegerField()
+    source = models.CharField(max_length=255)
+    metric = models.CharField(max_length=255, blank=True, null=True)
+    value = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    total_consumption = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    consumption_m3_per_h = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    unit = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'er_gas_consumption'
+

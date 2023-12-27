@@ -4,18 +4,46 @@ body {
     color: #ddd;
 }
 
-.prover {
+.tile {
 	font-size: 28pt;
 	border-left: 5px solid #ddd;
 	border-top: 5px solid #ddd;
-	border-bottom: 5px solid #ddd;
+	/* border-bottom: 5px solid #ddd; */
+}
+
+.row-ban {
+	height: 60vh;
+}
+
+.row-ban-pv {
+	height: 25vh;
+}
+
+.row-ban-gc {
+	height: 15vh;
+}
+
+.row-ban-result {
+	height: 20vh;
+}
+
+.row-forecast {
+	height: 40vh;
+}
+
+.row-history {
+	height: 60vh;
+}
+
+.row-gas {
+	height: 40vh;
 }
 
 .productie {
 	font-size: 28pt;
 }
 
-.productieTimestamp {
+.timestamp {
 	font-size: 12pt;
 }
 
@@ -23,12 +51,16 @@ body {
 	font-size: 28pt;
 }
 
-.verbruikTimestamp {
-	font-size: 12pt;
+.verbruikGasLabelLabel {
+	font-size: 18pt;
 }
+
+.verbruikGasLabel {
+	font-size: 18pt;
+}
+
 .resultaat {
 	font-size: 48pt;
-	border: 5px solid #ddd;
 }
 
 .resultaatPositive {
@@ -41,22 +73,38 @@ body {
 	color: #ddd;
 }
 
-#productie {
+.bg-dark-brs {
 	background: #666;
 }
 
-#verbruik {
-	background: #666;
-}
-
-/* History chart stuff */
+/* Chart stuff */
 .history {
+	background: #666;
+	/* Actual colors rendered on the canvas are set in JS */
+	border-top: 5px solid #ddd;
+	border-right: 5px solid #ddd;
+	border-bottom: 5px solid #ddd;
+	border-left: 5px solid #ddd;
+	height: 60vh;
+}
+
+.forecast {
+	background: #666;
+	/* Actual colors rendered on the canvas are set in JS */
+	border-top: 5px solid #ddd;
+	/* border-right: 5px solid #ddd; */
+	border-bottom: 5px solid #ddd;
+	border-left: 5px solid #ddd;
+	height: 40vh;
+}
+
+.history-gas {
 	background: #666;
 	/* Actual colors rendered on the canvas are set in JS */
 	border-left: 5px solid #ddd;
 	border-right: 5px solid #ddd;
 	border-bottom: 5px solid #ddd;
-	height: 350px;
+	height: 40vh;
 }
 
 /* Messages */

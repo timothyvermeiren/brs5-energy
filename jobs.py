@@ -33,8 +33,10 @@ if mode == "postgres_cleanup":
 # Mode "solar_estimate_refresh": updates solar energy production estimates from (source TBD)
 if mode == "solar_estimate_refresh":
     print("Refreshing solar production estimates from solar.io.")
+    if "fc_solar_api_key" in os.environ and os.environ["fc_solar_api_key"] is not None:
+        fc_solar_api_key = f"{ os.environ['fc_solar_api_key'] }/"
     # https://api.forecast.solar/:apikey/estimate/:lat/:lon/:dec/:az/:kwp
-    fc_solar_url = f"https://api.forecast.solar/estimate/{os.environ['fc_solar_lat']}/{os.environ['fc_solar_lon']}/{os.environ['fc_solar_dec']}/{os.environ['fc_solar_az']}/{os.environ['fc_solar_kwp']}"
+    fc_solar_url = f"https://api.forecast.solar/{fc_solar_api_key}estimate/{os.environ['fc_solar_lat']}/{os.environ['fc_solar_lon']}/{os.environ['fc_solar_dec']}/{os.environ['fc_solar_az']}/{os.environ['fc_solar_kwp']}"
     fc_solar_response = requests.get(url=fc_solar_url, headers={ "Accept": "application/json" })
     if not fc_solar_response.ok:
         print(f"Something went wrong getting the solar production estimate data from forecast.solar:\n\t{ fc_solar_response.text }")
