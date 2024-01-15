@@ -1,0 +1,11 @@
+# Example for brs5_energy_solar_modbus_via_hassio.service
+[Unit]
+Description=BRS 5 Energy - Solar Modbus via Hassio
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/opt/brs5-energy
+ExecStart=/opt/brs5-energy/.venv/bin/python /opt/brs5-energy/solar_modbus_via_hassio.py
+[Install]
+WantedBy=multi-user.target
