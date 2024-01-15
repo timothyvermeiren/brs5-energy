@@ -1,6 +1,6 @@
 CREATE DATABASE brs5_energy;
 
-CREATE USER brs5_energy WITH ENCRYPTED PASSWORD 'FiZk_ihcy7UzuyU-g*KbGcCNZ4Qz';
+CREATE USER brs5_energy WITH ENCRYPTED PASSWORD '';
 GRANT ALL PRIVILEGES ON DATABASE brs5_energy TO brs5_energy;
 
 -- As it's not possible to switch databases interactively or specify a schema like this when granting privileges ...

@@ -5,10 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/brs5_energy_monitor/manage.py",
+            "cwd": "${workspaceFolder}/brs5_energy_monitor",
+            "args": [
+                "runserver",
+                "8080"
+            ],
+            "django": true,
+            "justMyCode": true
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Jobs",
+            "type": "python",
+            "request": "launch",
+            "program": "jobs.py",
+            "args": ["--mode", "solar_estimate_refresh"],
             "console": "integratedTerminal",
             "justMyCode": true
         }

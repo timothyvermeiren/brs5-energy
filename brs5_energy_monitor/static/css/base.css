@@ -1,0 +1,156 @@
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: #ddd;
+    color: #ddd;
+}
+
+.tile {
+	font-size: 28pt;
+	border-left: 5px solid #ddd;
+	border-top: 5px solid #ddd;
+	/* border-bottom: 5px solid #ddd; */
+}
+
+.row-ban {
+	height: 60vh;
+}
+
+.row-ban-pv {
+	height: 25vh;
+}
+
+.row-ban-gc {
+	height: 15vh;
+}
+
+.row-ban-result {
+	height: 20vh;
+}
+
+.row-forecast {
+	height: 40vh;
+}
+
+.row-history {
+	height: 60vh;
+}
+
+.row-gas {
+	height: 40vh;
+}
+
+.productie {
+	font-size: 28pt;
+}
+
+.timestamp {
+	font-size: 12pt;
+}
+
+.verbruik {
+	font-size: 28pt;
+}
+
+.verbruikGasLabelLabel {
+	font-size: 18pt;
+}
+
+.verbruikGasLabel {
+	font-size: 18pt;
+}
+
+.resultaat {
+	font-size: 48pt;
+}
+
+.resultaatPositive {
+	background: #54babb;
+	color: #f4f731;
+}
+
+.resultaatNegative {
+	background: #e60050;
+	color: #ddd;
+}
+
+.bg-dark-brs {
+	background: #666;
+}
+
+/* Chart stuff */
+.history {
+	background: #666;
+	/* Actual colors rendered on the canvas are set in JS */
+	border-top: 5px solid #ddd;
+	border-right: 5px solid #ddd;
+	border-bottom: 5px solid #ddd;
+	border-left: 5px solid #ddd;
+	height: 60vh;
+}
+
+.forecast {
+	background: #666;
+	/* Actual colors rendered on the canvas are set in JS */
+	border-top: 5px solid #ddd;
+	/* border-right: 5px solid #ddd; */
+	border-bottom: 5px solid #ddd;
+	border-left: 5px solid #ddd;
+	height: 40vh;
+}
+
+.history-gas {
+	background: #666;
+	/* Actual colors rendered on the canvas are set in JS */
+	border-left: 5px solid #ddd;
+	border-right: 5px solid #ddd;
+	border-bottom: 5px solid #ddd;
+	height: 40vh;
+}
+
+/* Messages */
+.message {
+	position: absolute;
+	top: 20px;
+	z-index: 2023;
+	width: 500px;
+	left: 0;
+	right: 0;
+	border-radius: 10px;
+	box-shadow: 3px 3px 4px 0px rgba(50, 50, 50, 0.75);
+	color: white;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-align: center;
+}
+
+/*
+ * Give the various message types the correct colors
+ */
+.message.success {
+	background: #54babb;
+}
+
+.message.error {
+	background: #e60050;
+}
+
+.message.warning {
+	background: #f7a000;
+}
+
+.message.info {
+	background: #85c9e8;
+}
+
+#productiePercentProgress {
+	height: 20px;
+}
+
+/* Multiple browsers :rolling-eyes: */
+progress::-moz-progress-bar { background: #f4f731; }
+progress::-webkit-progress-value { background: #f4f731; }
+progress { background: #f4f731; }
