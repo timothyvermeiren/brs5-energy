@@ -1,7 +1,3 @@
-from sun2000_modbus import inverter
-from sun2000_modbus import registers
-from pymodbus.exceptions import ConnectionException
-
 import datetime, os, sys, time, traceback
 import psycopg2
 from dotenv import load_dotenv
@@ -78,6 +74,8 @@ while True:
                 postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=data_point_value, unit=data_point_unit)
         else:
             print(f"No data read.")
+            # Writing zeros as a test. Don't do this in "production" as this skews the max timestamp we use to read data incrementally!
+            # postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=0, unit="W")
 
     except Exception as e:
 
