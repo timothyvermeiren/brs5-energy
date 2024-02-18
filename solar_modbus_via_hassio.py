@@ -39,6 +39,15 @@ while True:
         pg_max_timestamp_query = f"SELECT MAX(record_timestamp) FROM { os.environ['pg_raw_table'] } WHERE source = 'solar_modbus_via_hassio' AND metric = 'Input Power';"
         pg_cursor.execute(pg_max_timestamp_query)
         max_timestamp = pg_cursor.fetchone()[0]
+        if max_timestamp is not None:
+            max_timestamp_query_condition = f"and to_timestamp(last_updated_ts) > '{ max_timestamp }'"
+            max_timestamp_query_condition_limit = ""
+        else:
+            # max_timestamp_query_condition = f"and to_timestamp(last_updated_ts) = (SELECT MAX(to_timestamp(last_updated_ts)) FROM states)"
+            # The above did not work so well, for some reason. LIMIT will work better.
+            max_timestamp_query_condition = ""
+            max_timestamp_query_condition_limit = "limit 1"
+
 
         # Build query for hassio recorder data after that timestamp
         postgres_hassio_query_for_input_power = f"""
@@ -53,8 +62,9 @@ while True:
             inner join public.states s on sm.metadata_id = s.metadata_id
             inner join public.state_attributes sa on s.attributes_id = sa.attributes_id 
         where sm.entity_id = 'sensor.inverter_active_power'
-            and to_timestamp(last_updated_ts) > '{ max_timestamp }'
+            { max_timestamp_query_condition }
         order by last_updated_ts ASC
+        { max_timestamp_query_condition_limit }
         """
         
         # Execute said query to get the data
@@ -73,7 +83,7 @@ while True:
                 # Write to Postgres
                 postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=data_point_value, unit=data_point_unit)
         else:
-            print(f"No data read.")
+            print(f"No data read. Trying to simply get one record, then.")
             # Writing zeros as a test. Don't do this in "production" as this skews the max timestamp we use to read data incrementally!
             # postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=0, unit="W")
 
