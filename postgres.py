@@ -1,4 +1,5 @@
 import os, sys, traceback
+import datetime
 from typing import Tuple
 import psycopg2
 from dotenv import load_dotenv
@@ -22,11 +23,14 @@ def connect():
     
     return pg_connection
 
-def log_data(pg_connection, table:str, source:str, metric:str, value:float, unit:str):
+def log_data(pg_connection, table:str, source:str, metric:str, value:float, unit:str, record_timestamp:datetime.datetime=None):
 
     try:
         pg_cursor = pg_connection.cursor()
-        pg_insert_query = f"INSERT INTO { table } (source, metric, value, unit) VALUES ('{ source }', '{ metric }', { value }, '{ unit }')"
+        if record_timestamp is not None:
+            pg_insert_query = f"INSERT INTO { table } (record_timestamp, source, metric, value, unit) VALUES ('{ record_timestamp }', '{ source }', '{ metric }', { value }, '{ unit }')"
+        else:
+            pg_insert_query = f"INSERT INTO { table } (source, metric, value, unit) VALUES ('{ source }', '{ metric }', { value }, '{ unit }')"
         pg_cursor.execute(pg_insert_query)
         pg_connection.commit()
         pg_cursor.execute(f"SELECT COUNT(*) FROM { table }")

@@ -78,10 +78,11 @@ while True:
 
                 data_point_value = input_power_row[2]
                 data_point_unit = input_power_row[1]
+                data_point_record_timestamp = input_power_row[0]
                 print(f"Input power: { data_point_value } { data_point_unit }")
 
                 # Write to Postgres
-                postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=data_point_value, unit=data_point_unit)
+                postgres.log_data(pg_connection, table=os.environ["pg_raw_table"], source="solar_modbus_via_hassio", metric="Input Power", value=data_point_value, unit=data_point_unit, record_timestamp=data_point_record_timestamp)
         else:
             print(f"No data read. Trying to simply get one record, then.")
             # Writing zeros as a test. Don't do this in "production" as this skews the max timestamp we use to read data incrementally!
