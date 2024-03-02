@@ -28,6 +28,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
     injectie_current = model_to_dict(injectie_current_o)
     gas_consumption_current_o = GasConsumption.objects.latest("record_timestamp")
     gas_consumption_current = model_to_dict(gas_consumption_current_o)
+    ev_battery_capacity_current_o = EnergyRaw.objects.filter(metric="EV9 Battery Level").latest("record_timestamp")
+    ev_battery_capacity_current = model_to_dict(ev_battery_capacity_current_o)
 
     # Now, determine our effective "performance", verbruik and resultaat.
     verbruik_current = {
@@ -61,11 +63,12 @@ def get_monitor_values(include_history:bool=False) -> dict:
     resultaat_history = []
     gas_consumption_history = []
     solar_forecast = []
+    solar_forecast_daily_wh = []
 
     if include_history:
 
-        # For electricity, because we have frequent measurements, we'll start with just a few
-        history_length = 200
+        # For electricity, because we have frequent measurements, we won't load the full history; approximately 10 minutes should do?
+        history_length = 600
 
         productie_history_o = EnergyRaw.objects.filter(metric="Input Power").order_by("-record_timestamp")[:history_length:-1]
         productie_history = list(map(model_to_dict, productie_history_o))
@@ -109,6 +112,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
         # We will consider the forecast as part of "history" as well; mainly because this is just used to determine which data to get with the initial load, as opposed to subsequent async calls that just have updated data.
         solar_forecast_o = SolarForecast.objects.filter(metric="Watt hours (energy) for the period").order_by("record_timestamp")
         solar_forecast = list(map(model_to_dict, solar_forecast_o))
+        solar_forecast_daily_wh_o = SolarForecast.objects.filter(metric="Total Watt hours (energy) for the day").order_by("record_timestamp")
+        solar_forecast_daily_wh = list(map(model_to_dict, solar_forecast_daily_wh_o))
     
 
     return {
@@ -123,7 +128,9 @@ def get_monitor_values(include_history:bool=False) -> dict:
         "verbruik_history": json.dumps(verbruik_history, default=str),
         "resultaat_history": json.dumps(resultaat_history, default=str),
         "gas_consumption_history": json.dumps(gas_consumption_history, default=str),
+        "ev_battery_capacity_current": ev_battery_capacity_current,
         "solar_forecast": json.dumps(solar_forecast, default=str),
+        "solar_forecast_daily_wh": solar_forecast_daily_wh,
     }
 
 # Create your views here.

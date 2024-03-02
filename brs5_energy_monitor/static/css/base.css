@@ -59,6 +59,10 @@ body {
 	font-size: 18pt;
 }
 
+.evBatteryLabel {
+	font-size: 18pt;
+}
+
 .resultaat {
 	font-size: 48pt;
 }
@@ -83,7 +87,7 @@ body {
 	/* Actual colors rendered on the canvas are set in JS */
 	border-top: 5px solid #ddd;
 	border-right: 5px solid #ddd;
-	border-bottom: 5px solid #ddd;
+	/* border-bottom: 5px solid #ddd; */
 	border-left: 5px solid #ddd;
 	height: 60vh;
 }
@@ -98,11 +102,32 @@ body {
 	height: 40vh;
 }
 
+.daily-solar-forecast {
+	background: #666;
+	border-bottom: 5px solid #ddd;
+	border-top: 5px solid #ddd;
+	border-left: 5px solid #ddd;
+}
+
+.daily-solar-forecast .weekday {
+	font-size: 12pt;
+}
+
+.daily-solar-forecast .value {
+	font-size: 24pt;
+}
+
+.daily-solar-forecast .daily-solar-forecast-row {
+	padding-top: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
 .history-gas {
 	background: #666;
 	/* Actual colors rendered on the canvas are set in JS */
 	border-left: 5px solid #ddd;
 	border-right: 5px solid #ddd;
+	border-top: 5px solid #ddd;
 	border-bottom: 5px solid #ddd;
 	height: 40vh;
 }

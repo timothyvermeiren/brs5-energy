@@ -72,7 +72,7 @@ async function initializeMonitor() {
             afnameLabel.text(`${response.afname_current.value} ${response.afname_current.unit}`);
             injectieLabel.text(`${response.injectie_current.value} ${response.injectie_current.unit}`);
             verbruikLabel.text(`${response.verbruik_current.value} ${response.verbruik_current.unit}`);
-            verbruikGasLabel.text(`${response.gas_consumption_current.consumption_m3_per_h.toFixed(3)} m3/h`);
+            verbruikGasLabel.text(`${parseFloat(response.gas_consumption_current.consumption_m3_per_h).toFixed(3)} m3/h`);
 
             // Update timestamps
             let productieTimestampValue = new Date(Date.parse(response.productie_current.record_timestamp)).toLocaleTimeString("nl-BE")
@@ -197,7 +197,8 @@ async function initializeForecastChart() {
             beginAtZero: true
           }
         },
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        pointRadius: 1
       }
     }
   );
@@ -235,9 +236,9 @@ async function initializeHistoryGasChart() {
           y: {
             beginAtZero: true
           },
-          x: {
-            type: "timeseries"
-          }
+          // x: {
+          //   type: "timeseries"
+          // }
         },
         maintainAspectRatio: false
       }
