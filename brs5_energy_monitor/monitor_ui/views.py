@@ -4,7 +4,7 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 
 from copy import deepcopy
-import json
+import json, datetime
 
 from .models import EnergyRaw, GasConsumption, SolarForecast
 
@@ -13,13 +13,23 @@ from .models import EnergyRaw, GasConsumption, SolarForecast
 def get_monitor_values(include_history:bool=False) -> dict:
     
     # For all three, we create a dict (instanct.__dict__) and work with that instead of the object.
-    productie_current_o = EnergyRaw.objects.filter(metric="Input Power").latest("record_timestamp")
-    productie_current = model_to_dict(productie_current_o)
-    if productie_current["unit"] == "W":
-        # We normally capture this in W, but let's convert to kW
-        productie_current["value"] = productie_current["value"] / 1000
-        productie_current["unit"] = "kW"
-        # TBD whether this has any impact on performance; we're manipulating the ORM representation of the data after all, perhaps we need a copy
+    try:
+        productie_current_o = EnergyRaw.objects.filter(metric="Input Power").latest("record_timestamp")
+        productie_current = model_to_dict(productie_current_o)
+        if productie_current["unit"] == "W":
+            # We normally capture this in W, but let's convert to kW
+            productie_current["value"] = productie_current["value"] / 1000
+            productie_current["unit"] = "kW"
+            # TBD whether this has any impact on performance; we're manipulating the ORM representation of the data after all, perhaps we need a copy
+    except EnergyRaw.DoesNotExist:
+        # Surrogate value if this data does not exist, which can be the case if it isn't fed from the source (Huawei -> Home Assistant)
+        productie_current = {
+            "record_timestamp": datetime.datetime.now(),
+            "source": "solar_modbus_via_hassio",
+            "metric": "Input Power",
+            "value": 0,
+            "unit": "kW"
+        }
     # For productie, we also include solar capacity to determine how much we're producing as a % of the total capacity.
     solar_capacity_total = settings.SOLAR_STRING_CAPACITY_KW
     afname_current_o = EnergyRaw.objects.filter(metric="Afgenomen ogenblikkelijk vermogen").latest("record_timestamp")
@@ -28,8 +38,18 @@ def get_monitor_values(include_history:bool=False) -> dict:
     injectie_current = model_to_dict(injectie_current_o)
     gas_consumption_current_o = GasConsumption.objects.latest("record_timestamp")
     gas_consumption_current = model_to_dict(gas_consumption_current_o)
-    ev_battery_capacity_current_o = EnergyRaw.objects.filter(metric="EV9 Battery Level").latest("record_timestamp")
-    ev_battery_capacity_current = model_to_dict(ev_battery_capacity_current_o)
+    try:
+        ev_battery_capacity_current_o = EnergyRaw.objects.filter(metric="EV9 Battery Level").latest("record_timestamp")
+        ev_battery_capacity_current = model_to_dict(ev_battery_capacity_current_o)
+    except EnergyRaw.DoesNotExist:
+        # Surrogate value if this data does not exist, which can be the case if it isn't fed from the source (Huawei -> Home Assistant)
+        ev_battery_capacity_current = {
+            "record_timestamp": datetime.datetime.now(),
+            "source": "ev",
+            "metric": "EV9 Battery Level",
+            "value": 0,
+            "unit": "kWh"
+        }
 
     # Now, determine our effective "performance", verbruik and resultaat.
     verbruik_current = {
@@ -72,11 +92,22 @@ def get_monitor_values(include_history:bool=False) -> dict:
 
         productie_history_o = EnergyRaw.objects.filter(metric="Input Power").order_by("-record_timestamp")[:history_length:-1]
         productie_history = list(map(model_to_dict, productie_history_o))
-        for productie_history_value in productie_history:
-            if productie_history_value["unit"] == "W":
-                # We normally capture this in W, but let's convert to kW
-                productie_history_value["value"] = productie_history_value["value"] / 1000
-                productie_history_value["unit"] = "kW"
+        if productie_history == []:
+            # It's possible that we have no data, perhaps because the input isn't flowing through. We need to fix that elsewhere, but nonetheless let's deal with it in a civilized way here.
+            productie_history =  [{
+                "record_timestamp": datetime.datetime.now() - datetime.timedelta(seconds=i),
+                "source": "solar_modbus_via_hassio",
+                "metric": "Input Power",
+                "value": 0,
+                "unit": "kW"
+            } for i in range(0, history_length)]
+            # ERROR MESSAGE for display?
+        else:
+            for productie_history_value in productie_history:
+                if productie_history_value["unit"] == "W":
+                    # We normally capture this in W, but let's convert to kW
+                    productie_history_value["value"] = productie_history_value["value"] / 1000
+                    productie_history_value["unit"] = "kW"
         afname_history_o = EnergyRaw.objects.filter(metric="Afgenomen ogenblikkelijk vermogen").order_by("-record_timestamp")[:history_length:-1]
         afname_history = list(map(model_to_dict, afname_history_o))
         injectie_history_o = EnergyRaw.objects.filter(metric="Geïnjecteerd ogenblikkelijk vermogen").order_by("-record_timestamp")[:history_length:-1]
