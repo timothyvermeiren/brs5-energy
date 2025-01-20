@@ -1,0 +1,4 @@
+serial_port: "/dev/ttyUSB0"
+dsmr_version: "5B"
+server:
+  port: 9988

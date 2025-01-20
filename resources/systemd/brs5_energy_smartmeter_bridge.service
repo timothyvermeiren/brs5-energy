@@ -1,0 +1,11 @@
+# Example for brs5_energy_smartmeter_bridge.service
+[Unit]
+Description=BRS 5 Energy - Smartmeter Bridge
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/pi/smartmeter-bridge
+ExecStart=/home/pi/smartmeter-bridge/smartmeter-bridge-linux-arm64
+[Install]
+WantedBy=multi-user.target
