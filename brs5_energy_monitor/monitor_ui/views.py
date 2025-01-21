@@ -113,7 +113,8 @@ def get_monitor_values(include_history:bool=False) -> dict:
         injectie_history_o = EnergyRaw.objects.filter(metric="Geïnjecteerd ogenblikkelijk vermogen").order_by("-record_timestamp")[:history_length:-1]
         injectie_history = list(map(model_to_dict, injectie_history_o))
 
-        for i in range(history_length):
+        number_of_records = min(history_length, len(verbruik_history)) 
+        for i in range(number_of_records):
             # Prepare, add the current values as a template
             verbruik_history.append(deepcopy(verbruik_current))
             resultaat_history.append(deepcopy(resultaat_current))
