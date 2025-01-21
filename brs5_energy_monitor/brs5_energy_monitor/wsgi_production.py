@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 
 import os
 
-os.environ["DJANGO_ALLOWED_HOSTS"] = "127.0.0.1,localhost,192.168.68.67,brs5-energy.duckdns.org,brs5-energy.08082020.be"
+os.environ["DJANGO_ALLOWED_HOSTS"] = "127.0.0.1,localhost,192.168.68.67,brs5-energy.duckdns.org,brs5-energy.08082020.be,brs5-energy.morregen.be"
 os.environ["DJANGO_SETTINGS_MODULE"] = "brs5_energy_monitor.settings"
 
 # Database
