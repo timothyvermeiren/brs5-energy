@@ -14,6 +14,13 @@ The project consists of a few components hosted in different places, for the pur
 * `fusion_solar.py`: not currently used; but could be used to get solar panel information from the **Huawei Fusion Solar API**.
 * Data for solar production forecast is collected from https://forecast.solar/. As we're not doing this live but at a daily rate, this is implemented in `jobs.py` and called through `cron` instead of a separate module running as a service.
 
+#### Running these as services
+
+* Using the service files in `resources/systemd` or `resources/smartmeterBridge`.
+* Link the file with its absolute path, e.g.: `systemctl --user link /opt/brs5-energy/resources/systemd/brs5_energy_dsmr.service`
+* Then enable it: `systemctl enable /home/timothy/.config/systemd/user/brs5_energy_dsmr.service`
+* Then start it: `systemctl start brs5_energy_dsmr.service`
+
 ### Storing and Processing Data
 
 Postgres database, with DDL in `resources/postgres_setup.sql`. Relies on a few scheduled procedures to aggregate the data, TBD whether these are run natively in Postgres (pgAgent) or with `cron` + Python.

@@ -7,5 +7,7 @@
 * Place that in `~/smartmeter-bridge`, and create a config file there as well (see example in this folder)
 * Make the binary executable: `chmod u+x smartmeter-bridge-linux-arm64`
 * See the systemd configuration in this repository (`systemd/brs5_energy_smartmeter_bridge.service`) for how to ensure this is always running.
-* Put a copy of this service file in `~/smartmeter-bridge`, review it, and enable it: `systemctl enable brs5_energy_smartmeter_bridge.service`
+* Put a copy of this service file in `~/smartmeter-bridge`, review it, and link it: `systemctl --user link /home/pi/smartmeter-bridge/brs5_energy_smartmeter_bridge.service` (no sudo)
+* Then enable it: `systemctl enable /home/pi/.config/systemd/user/brs5_energy_smartmeter_bridge.service`
+* Then start it: `systemctl start brs5_energy_smartmeter_bridge.service`
 * Check the connection to this service from the DSMR Python component.

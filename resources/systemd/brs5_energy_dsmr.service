@@ -1,4 +1,4 @@
-# Example for brs5_energy_dsmr.service
+# brs5_energy_dsmr.service
 [Unit]
 Description=BRS 5 Energy - DSMR
 After=multi-user.target
