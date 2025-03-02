@@ -10,8 +10,6 @@ import postgres
 
 load_dotenv()
 
-# Note that this module is currently not in use due to a conflict with Home Assistant. When both try to connect to the Solar Inverter modbus interface, only one is able to actually read the data. This module is preserved for potential future use, but it's no longer run as a service. Instead, the BRS5 Energy web application displays data from Home Assistant's postgres output/recorder.
-
 pg_connection = postgres.connect()
 
 try:

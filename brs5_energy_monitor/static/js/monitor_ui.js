@@ -23,6 +23,8 @@ async function initializeMonitor() {
     const injectieLabel = $("#injectieLabel");
     const verbruikLabel = $("#verbruikLabel");
     const verbruikGasLabel = $("#verbruikGasLabel");
+    const evBatteryLabel = $("#evBatteryLabel");
+    const chargingStationConsumption = $("#chargingStationConsumption");
 
     const productiePercentProgress = $("#productiePercentProgress");
     
@@ -73,6 +75,8 @@ async function initializeMonitor() {
             injectieLabel.text(`${response.injectie_current.value} ${response.injectie_current.unit}`);
             verbruikLabel.text(`${response.verbruik_current.value} ${response.verbruik_current.unit}`);
             verbruikGasLabel.text(`${parseFloat(response.gas_consumption_current.consumption_m3_per_h).toFixed(3)} m3/h`);
+            evBatteryLabel.text(`${response.ev_battery_capacity_current.value} ${response.ev_battery_capacity_current.unit}`);
+            chargingStationConsumption.text(`${response.charging_station_consumption_current.value} ${response.charging_station_consumption_current.unit}`);
 
             // Update timestamps
             let productieTimestampValue = new Date(Date.parse(response.productie_current.record_timestamp)).toLocaleTimeString("nl-BE")

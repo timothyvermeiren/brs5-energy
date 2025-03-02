@@ -11,6 +11,7 @@ The project consists of a few components hosted in different places, for the pur
   In our setup, this is a component running on the same device as Home Assistant (`hassio`), as that is connected to our home network via LAN, but connected to the Sun2000's wireless network via Wi-Fi.
 * `dsmr.py`: collects **live information from the BE Fluvius meter**, through a USB adapter for the serial port.  
   In our case, this relies on a Pi Zero connected to said USB adapter running [smartmeterBridge](https://github.com/legolasbo/smartmeterBridge), exposing it as a TCP/IP service. In turn, this module connects to _that_ TCP/IP service with `socket`.
+  Note that we have to ensure our Raspberry Pi Zero 2W does not go into powersave mode, so we have a second systemd service on there to prevent that from happening (it sets `iw dev wlan0 set power_save off`) every restart.
 * `fusion_solar.py`: not currently used; but could be used to get solar panel information from the **Huawei Fusion Solar API**.
 * Data for solar production forecast is collected from https://forecast.solar/. As we're not doing this live but at a daily rate, this is implemented in `jobs.py` and called through `cron` instead of a separate module running as a service.
 

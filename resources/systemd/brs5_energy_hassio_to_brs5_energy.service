@@ -1,0 +1,11 @@
+# Example for brs5_energy_hassio_to_brs5_energy.service
+[Unit]
+Description=BRS 5 Energy - HASSIO to BRS5 Energy
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/opt/brs5-energy
+ExecStart=/opt/brs5-energy/.venv/bin/python /opt/brs5-energy/hassio_to_brs5_energy.py
+[Install]
+WantedBy=multi-user.target

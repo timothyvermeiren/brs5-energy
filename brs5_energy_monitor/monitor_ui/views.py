@@ -38,6 +38,7 @@ def get_monitor_values(include_history:bool=False) -> dict:
     injectie_current = model_to_dict(injectie_current_o)
     gas_consumption_current_o = GasConsumption.objects.latest("record_timestamp")
     gas_consumption_current = model_to_dict(gas_consumption_current_o)
+    # EV9 Battery capacity and Smappee Charging Station consumption are both read by Home Assistant already, so we're going to just pick up those values there. (We already copy them to our database).
     try:
         ev_battery_capacity_current_o = EnergyRaw.objects.filter(metric="EV9 Battery Level").latest("record_timestamp")
         ev_battery_capacity_current = model_to_dict(ev_battery_capacity_current_o)
@@ -47,6 +48,18 @@ def get_monitor_values(include_history:bool=False) -> dict:
             "record_timestamp": datetime.datetime.now(),
             "source": "ev",
             "metric": "EV9 Battery Level",
+            "value": 0,
+            "unit": "kWh"
+        }
+    try:
+        charging_station_consumption_current_o = EnergyRaw.objects.filter(metric="Charging Station Energy Consumption").latest("record_timestamp")
+        charging_station_consumption_current = model_to_dict(charging_station_consumption_current_o)
+    except EnergyRaw.DoesNotExist:
+        # Surrogate value if this data does not exist, which can be the case if it isn't fed from the source (Huawei -> Home Assistant)
+        charging_station_consumption_current = {
+            "record_timestamp": datetime.datetime.now(),
+            "source": "smappee",
+            "metric": "Charging Station Energy Consumption",
             "value": 0,
             "unit": "kWh"
         }
@@ -161,6 +174,7 @@ def get_monitor_values(include_history:bool=False) -> dict:
         "resultaat_history": json.dumps(resultaat_history, default=str),
         "gas_consumption_history": json.dumps(gas_consumption_history, default=str),
         "ev_battery_capacity_current": ev_battery_capacity_current,
+        "charging_station_consumption_current": charging_station_consumption_current,
         "solar_forecast": json.dumps(solar_forecast, default=str),
         "solar_forecast_daily_wh": solar_forecast_daily_wh,
     }

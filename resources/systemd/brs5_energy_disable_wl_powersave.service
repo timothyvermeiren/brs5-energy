@@ -1,0 +1,9 @@
+# brs5_energy_disable_wl_powersave.service
+[Unit]
+Description=BRS 5 Energy - Disable WL powersave
+After=multi-user.target
+[Service]
+Type=simple
+ExecStart=iw dev wlan0 set power_save off
+[Install]
+WantedBy=multi-user.target
