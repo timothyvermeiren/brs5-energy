@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -14,12 +15,30 @@ class EnergyRaw(models.Model):
         managed = False
         db_table = 'energy_raw'
 
+class SolarPlant(models.Model):
+    """
+    "Properties" for Forecast.Solar which contain a plant's coordinates, declination, and azimuth, for retrieval.
+    """
+    owner = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.TextField()
+    # The next 4 fields are purely based on the values needed for Forecast.Solar: https://doc.forecast.solar
+    latitude = models.DecimalField(decimal_places=7, max_digits=10)
+    longitude = models.DecimalField(decimal_places=7, max_digits=10)
+    declination = models.IntegerField()
+    azimuth = models.IntegerField()
+    kwp = models.DecimalField(decimal_places=7, max_digits=10, default=0)
+
+    class Meta:
+        db_table = 'solar_plant'
+
+
 class SolarForecast(models.Model):
     record_timestamp = models.DateTimeField(primary_key=True)
     source = models.CharField(max_length=255)
     metric = models.CharField(max_length=255, blank=True, null=True)
     value = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     unit = models.CharField(max_length=255, blank=True, null=True)
+    solar_plant = models.ForeignKey(to=SolarPlant, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
