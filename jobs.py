@@ -103,7 +103,7 @@ if mode == "solar_estimate_refresh":
                         fc_solar_data_mapping[metric].get("metric_label", metric), # "metric"
                         datapoint_value, # "value"
                         fc_solar_data_mapping[metric].get("unit", "W"), # "unit"
-                        solar_plant['id'] # "solar_plant" i.e. its ID
+                        solar_plant['id'] # "solar_plant_id" i.e. its ID
                     ])
                 pg_cursor.executemany(f"INSERT INTO { os.environ['pg_forecast_table'] } VALUES(%s, %s, %s, %s, %s, %s)", rows_for_insertion)
                 pg_connection.commit()
