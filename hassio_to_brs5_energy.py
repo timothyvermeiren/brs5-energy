@@ -29,18 +29,25 @@ hassio_data_to_fetch = {
         "source": "solar_modbus_via_hassio",
         "metric": "Input Power",
         "entity_id": "sensor.inverter_active_power"
-     },
+    },
+    "charging_station_consumption": { 
+        "source": "smappee",
+        "metric": "Charging Station Energy Consumption",
+        "entity_id": "sensor.weerde_vermeiren_load_weerde_vermeiren_1"
+    },
     "ev9_battery_level": { 
         "source": "ev",
         "metric": "EV9 Battery Level",
         "entity_id": "sensor.ev9_ev_battery_level"
-     }
+    }
 }
 
 while True:
 
     print("-")
     print(f"{ datetime.datetime.utcnow() }")
+
+    time.sleep(2)
 
     for hassio_data in hassio_data_to_fetch.keys():
 
@@ -106,4 +113,3 @@ while True:
 
             print(f"Unable to read { hassio_data } data from Hassio recorder data:\n\t{e}\n\t{traceback.format_exc()}")
 
-    time.sleep(2)

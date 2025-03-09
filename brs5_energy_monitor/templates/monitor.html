@@ -108,8 +108,8 @@
                                         <i class="fa-solid fa-car"></i>
                                     </div>
                                     <div class="col-9">
-                                        <div class="row evBatteryLabel">EV9</div>
-                                        <div class="row evBatteryLabel" id="evBatteryLabel">{{ ev_battery_capacity_current.value }} {{ ev_battery_capacity_current.unit }}</div>
+                                        <div class="row evBatteryLabel">EV9&nbsp;@&nbsp;<div class="d-inline pl-1" id="evBatteryLabel">{{ ev_battery_capacity_current.value }} {{ ev_battery_capacity_current.unit }}</div></div>
+                                        <div class="row chargingStationConsumption" id="chargingStationConsumption">{{ charging_station_consumption_current.value }}{{ charging_station_consumption_current.unit }}</div>
                                         <div class="row timestamp" id="evBatteryTimestamp">{{ ev_battery_capacity_current.record_timestamp|time:"H:i:s" }}</div>
                                     </div>
                                 </div>
