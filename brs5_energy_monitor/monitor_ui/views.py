@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.forms.models import model_to_dict
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 
 from copy import deepcopy
 import json, datetime
@@ -10,8 +10,14 @@ from .models import EnergyRaw, GasConsumption, SolarForecast
 
 # Helper function to get values which we might as well just leave here. Returns a dict that we can use as the context
 
-def get_monitor_values(include_history:bool=False) -> dict:
+def get_monitor_values(request:HttpRequest, include_history:bool=False) -> dict:
     
+    # Is there an authenticated user? If not, we'll display public data from Timothy (user id 1).
+    if request.user.is_authenticated:
+        request_user_id = request.user.id
+    else:
+        request_user_id = 1
+
     # For all three, we create a dict (instanct.__dict__) and work with that instead of the object.
     try:
         productie_current_o = EnergyRaw.objects.filter(metric="Input Power").latest("record_timestamp")
@@ -155,9 +161,9 @@ def get_monitor_values(include_history:bool=False) -> dict:
 
 
         # We will consider the forecast as part of "history" as well; mainly because this is just used to determine which data to get with the initial load, as opposed to subsequent async calls that just have updated data.
-        solar_forecast_o = SolarForecast.objects.filter(metric="Watt hours (energy) for the period").order_by("record_timestamp")
+        solar_forecast_o = SolarForecast.objects.filter(metric="Watt hours (energy) for the period", solar_plant__owner=request_user_id).order_by("record_timestamp")
         solar_forecast = list(map(model_to_dict, solar_forecast_o))
-        solar_forecast_daily_wh_o = SolarForecast.objects.filter(metric="Total Watt hours (energy) for the day").order_by("record_timestamp")
+        solar_forecast_daily_wh_o = SolarForecast.objects.filter(metric="Total Watt hours (energy) for the day", solar_plant__owner=request_user_id).order_by("record_timestamp")
         solar_forecast_daily_wh = list(map(model_to_dict, solar_forecast_daily_wh_o))
     
 
@@ -182,13 +188,13 @@ def get_monitor_values(include_history:bool=False) -> dict:
 # Create your views here.
 
 def index(request):
-    context = get_monitor_values(include_history=True)
+    context = get_monitor_values(request=request, include_history=True)
     return render(request, "monitor.html", context)
 
 
 def get_monitor_values_async(request):
     try:
-        monitor_values = get_monitor_values()
+        monitor_values = get_monitor_values(request=request)
         return JsonResponse(monitor_values)
     except Exception as e:
         print(e)
