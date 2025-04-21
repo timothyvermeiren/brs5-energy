@@ -85,7 +85,7 @@ if mode == "solar_estimate_refresh":
 
         else:
             print("Response received from forecast.solar; storing in Postgres after clearing the table.")
-            pg_delete_query = f"DELETE FROM { os.environ['pg_forecast_table'] } WHERE solar_plant = { solar_plant['id'] }"
+            pg_delete_query = f"DELETE FROM { os.environ['pg_forecast_table'] } WHERE solar_plant_id = { solar_plant['id'] }"
             pg_cursor.execute(pg_delete_query)
             print(f"{ pg_cursor.rowcount } rows deleted.")
             pg_connection.commit()
